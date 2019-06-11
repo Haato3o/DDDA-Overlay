@@ -1,0 +1,150 @@
+﻿<Window x:Name="Overlay" x:Class="DDDA_Overlay.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDDA_Overlay"
+        mc:Ignorable="d"
+        Title="DDDA Overlay" Height="768" Width="1366" Background="#0017FF00" Topmost="True" WindowStyle="None" AllowsTransparency="True" Left="0" Top="0" Closed="Overlay_Closed" Icon="icon.ico" ShowInTaskbar="False" Closing="Overlay_Closing">
+    <Window.Resources>
+        <SolidColorBrush x:Key="ProgressBar.Progress" Color="#FF06B025"/>
+        <SolidColorBrush x:Key="ProgressBar.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="ProgressBar.Border" Color="#FFBCBCBC"/>
+        <Style TargetType="{x:Type ProgressBar}">
+            <Setter Property="Foreground" Value="{StaticResource ProgressBar.Progress}"/>
+            <Setter Property="Background" Value="{StaticResource ProgressBar.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ProgressBar.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Grid x:Name="TemplateRoot">
+                            <Grid.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform AngleX="45"/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Grid.LayoutTransform>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Determinate"/>
+                                    <VisualState x:Name="Indeterminate">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="Animation">
+                                                <EasingDoubleKeyFrame KeyTime="0" Value="0.25"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0.25"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:2" Value="0.25"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                            <PointAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="Animation">
+                                                <EasingPointKeyFrame KeyTime="0" Value="-0.5,0.5"/>
+                                                <EasingPointKeyFrame KeyTime="0:0:1" Value="0.5,0.5"/>
+                                                <EasingPointKeyFrame KeyTime="0:0:2" Value="1.5,0.5"/>
+                                            </PointAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0,0,0,0" UseLayoutRounding="False" />
+                            <Rectangle x:Name="PART_Track" UseLayoutRounding="False" RenderTransformOrigin="0.5,0.5" Stretch="Fill"/>
+                            <Grid x:Name="PART_Indicator" ClipToBounds="True" HorizontalAlignment="Left" UseLayoutRounding="False">
+                                <Grid.LayoutTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Grid.LayoutTransform>
+                                <Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}"/>
+                                <Rectangle x:Name="Animation" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5" Stretch="None">
+                                    <Rectangle.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                            </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Vertical">
+                                <Setter Property="LayoutTransform" TargetName="TemplateRoot">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="-90"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsIndeterminate" Value="true">
+                                <Setter Property="Visibility" TargetName="Indicator" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Label x:Name="secondPawnName" Content="Second Pawn" HorizontalAlignment="Left" Margin="10,161,0,0" VerticalAlignment="Top" Width="242" Foreground="#FFEAEAEA" FontSize="16" FontFamily="Roboto" BorderThickness="0" Background="#33000000" Height="48"/>
+        <Label x:Name="thirdPawnName" Content="Third Pawn" HorizontalAlignment="Left" Margin="10,213,0,0" VerticalAlignment="Top" Width="242" Foreground="#FFEAEAEA" FontSize="16" FontFamily="Roboto" BorderThickness="0" Background="#33000000" Height="48"/>
+        <Label x:Name="firstPawnName" Content="First Pawn" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="242" Foreground="#FFEAEAEA" FontSize="16" FontFamily="Roboto" BorderThickness="0" Background="#33000000" Height="50"/>
+        <ProgressBar x:Name="thirdPawnBar" HorizontalAlignment="Left" Height="6" Margin="10,237,0,0" VerticalAlignment="Top" Width="242" BorderBrush="#4CE6E6E6" Value="20" Background="#4CE6E6E6" UseLayoutRounding="True">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FF07AC4B"/>
+                    <GradientStop Color="#FF008336" Offset="1"/>
+                    <GradientStop Color="#FF00913C" Offset="0.512"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="firstPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,136,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE45300" Offset="1"/>
+                    <GradientStop Color="#FFCB5300"/>
+                    <GradientStop Color="#FFE65E00" Offset="0.488"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="firstPawnBar" HorizontalAlignment="Left" Height="6" Margin="10,130,0,0" VerticalAlignment="Top" Width="242" BorderBrush="#4CE6E6E6" Value="100" Background="#4CE6E6E6">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FF07AC4B"/>
+                    <GradientStop Color="#FF008336" Offset="1"/>
+                    <GradientStop Color="#FF00913C" Offset="0.512"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="secondPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,191,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE45300" Offset="1"/>
+                    <GradientStop Color="#FFCB5300"/>
+                    <GradientStop Color="#FFE65E00" Offset="0.488"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="secondPawnBar" HorizontalAlignment="Left" Height="6" Margin="10,185,0,0" VerticalAlignment="Top" Width="242" BorderBrush="#4CE6E6E6" Value="20" Background="#4CE6E6E6">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FF07AC4B"/>
+                    <GradientStop Color="#FF008336" Offset="1"/>
+                    <GradientStop Color="#FF00913C" Offset="0.512"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+        <ProgressBar x:Name="thirdPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,243,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE45300" Offset="1"/>
+                    <GradientStop Color="#FFCB5300"/>
+                    <GradientStop Color="#FFE65E00" Offset="0.488"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
+    </Grid>
+
+</Window>
