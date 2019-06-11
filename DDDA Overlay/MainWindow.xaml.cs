@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using DDDA_Overlay.Game;
 using DDDA_Overlay.Memory;
 using System.Windows.Interop;
-using System.Text;
 
 namespace DDDA_Overlay {
     /// <summary>
