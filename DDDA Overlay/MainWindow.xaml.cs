@@ -14,8 +14,9 @@ namespace DDDA_Overlay {
         // System tray icon
         private System.Windows.Forms.NotifyIcon DDDATrayIcon;
 
-        // DDDA stuff
-        const string DDDA_Name = "Dragon's Dogma: Dark Arisen";
+        // Monitor
+        private double _Width = SystemParameters.PrimaryScreenWidth;
+        private double _Height = SystemParameters.PrimaryScreenHeight;
 
         // Starts all classes
         Pawn FirstPawn = new Pawn(1);
@@ -36,6 +37,11 @@ namespace DDDA_Overlay {
         // Main function
         public MainWindow() {
             InitializeComponent();
+
+            // Sets the overlay width and height to user's monitor
+            Overlay.Width = _Width;
+            Overlay.Height = _Height;
+
             InitializeTrayIcon();
             MakeWindowClickThrough();
             Reader.GetDDDAProcess();
@@ -86,7 +92,7 @@ namespace DDDA_Overlay {
 
         private void StartAllScanners_Thread() {
             if (Reader.ProcessIsRunning) {
-
+                
                 // Check if active window is DDDA, if it's not then the program will hide the pawn widget
                 if (DDDAWindowActive()) {
                     // Check if pawns HP are higher than 0
@@ -109,8 +115,6 @@ namespace DDDA_Overlay {
                 } else {
                     HidePawns();
                 }
-                
-
             } else {
                 // If the game isn't running then hide pawn HP bars
                 HidePawns();
@@ -133,6 +137,9 @@ namespace DDDA_Overlay {
 
         // Hide Pawns
         private void HideFirstPawn() {
+            if (!firstPawnBar.IsVisible) {
+                return;
+            }
             Overlay.firstPawnBar.Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Background,
                 new Action(() => {
@@ -144,6 +151,9 @@ namespace DDDA_Overlay {
         }
 
         private void HideSecondPawn() {
+            if (!secondPawnBar.IsVisible) {
+                return;
+            }
             Overlay.secondPawnBar.Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Background,
                 new Action(() => {
@@ -155,6 +165,9 @@ namespace DDDA_Overlay {
         }
 
         private void HideThirdPawn() {
+            if (!thirdPawnBar.IsVisible) {
+                return;
+            }
             Overlay.thirdPawnBar.Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.Background,
                 new Action(() => {

@@ -100,7 +100,7 @@
                 </LinearGradientBrush>
             </ProgressBar.Foreground>
         </ProgressBar>
-        <ProgressBar x:Name="firstPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,136,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+        <ProgressBar x:Name="firstPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,136,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#4CE6E6E6" Value="100" Background="#4CE6E6E6">
             <ProgressBar.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FFE45300" Offset="1"/>
@@ -118,7 +118,7 @@
                 </LinearGradientBrush>
             </ProgressBar.Foreground>
         </ProgressBar>
-        <ProgressBar x:Name="secondPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,191,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+        <ProgressBar x:Name="secondPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,191,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#4CE6E6E6" Value="50" Background="#4CE6E6E6">
             <ProgressBar.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FFE45300" Offset="1"/>
@@ -136,7 +136,7 @@
                 </LinearGradientBrush>
             </ProgressBar.Foreground>
         </ProgressBar>
-        <ProgressBar x:Name="thirdPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,243,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#7FE6E6E6" Value="100" Background="#7FE6E6E6">
+        <ProgressBar x:Name="thirdPawnStamina" HorizontalAlignment="Left" Height="3" Margin="16,243,0,0" VerticalAlignment="Top" Width="172" BorderBrush="#4CE6E6E6" Value="100" Background="#4CE6E6E6">
             <ProgressBar.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FFE45300" Offset="1"/>
