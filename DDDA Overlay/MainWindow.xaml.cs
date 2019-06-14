@@ -11,6 +11,8 @@ namespace DDDA_Overlay {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+
+
         // System tray icon
         private System.Windows.Forms.NotifyIcon DDDATrayIcon;
 
@@ -19,6 +21,7 @@ namespace DDDA_Overlay {
         private double _Height = SystemParameters.PrimaryScreenHeight;
 
         // Starts all classes
+        Player Player = new Player();
         Pawn FirstPawn = new Pawn(1);
         Pawn SecondPawn = new Pawn(2);
         Pawn ThirdPawn = new Pawn(3);
@@ -68,14 +71,13 @@ namespace DDDA_Overlay {
             int GWL_EXSTYLE = (-20);
 
             // Get window handler
-            var Wnd = Window.GetWindow(Overlay);
+            var Wnd = GetWindow(Overlay);
             IntPtr hwnd = new WindowInteropHelper(Wnd).EnsureHandle();
             // Get window flags
             int Styles = GetWindowLong(hwnd, GWL_EXSTYLE);
             // Apply the click through flag
             SetWindowLong(hwnd, GWL_EXSTYLE, Styles | WS_EX_TRANSPARENT);
-        } 
-
+        }
         // Runs the thread
         private void Run() {
             ThreadStart CoreThreadRef = new ThreadStart(StartAllScanners_Thread);
@@ -86,40 +88,44 @@ namespace DDDA_Overlay {
 
         // This function will check if DDDA window is the focused one
         private bool DDDAWindowActive() {
-            return GetForegroundWindow() == Reader.DDDA_hWnd; 
+            return GetForegroundWindow() == Reader.DDDA_hWnd;
         }
-
 
         private void StartAllScanners_Thread() {
             if (Reader.ProcessIsRunning) {
-                
+
                 // Check if active window is DDDA, if it's not then the program will hide the pawn widget
                 if (DDDAWindowActive()) {
+                    // Update player
+                    if (Player.Level == 0) {
+                        HidePlayerExpBar();
+                    } else {
+                        ShowPlayerExpBar();
+                        UpdateExp(Player.CurrentExp, Player.TotalExp, Player.Level);
+                    }
+
                     // Check if pawns HP are higher than 0
                     CheckPawnsAreAlive();
 
                     // Updates First pawn
-                    UpdateFirstPawnBar(FirstPawn.Current_HP, FirstPawn.Total_HP);
-                    UpdateFirstPawnName(FirstPawn.Name);
-                    UpdateFirstPawnStamina(FirstPawn.CurrentStamina, FirstPawn.TotalStamina);
-
+                    UpdateFirstPawn(FirstPawn.Name, FirstPawn.Current_HP, FirstPawn.Total_HP, FirstPawn.CurrentStamina, FirstPawn.TotalStamina);
+                    
                     // Updates second pawn
-                    UpdateSecondPawnBar(SecondPawn.Current_HP, SecondPawn.Total_HP);
-                    UpdateSecondPawnName(SecondPawn.Name);
-                    UpdateSecondPawnStamina(SecondPawn.CurrentStamina, SecondPawn.TotalStamina);
-
+                    UpdateSecondPawn(SecondPawn.Name, SecondPawn.Current_HP, SecondPawn.Total_HP, SecondPawn.CurrentStamina, SecondPawn.TotalStamina);
+                   
                     // Updates third pawn
-                    UpdateThirdPawnBar(ThirdPawn.Current_HP, ThirdPawn.Total_HP);
-                    UpdateThirdPawnName(ThirdPawn.Name);
-                    UpdateThirdPawnStamina(ThirdPawn.CurrentStamina, ThirdPawn.TotalStamina);
+                    UpdateThirdPawn(ThirdPawn.Name, ThirdPawn.Current_HP, ThirdPawn.Total_HP, ThirdPawn.CurrentStamina, ThirdPawn.TotalStamina);
+
                 } else {
                     HidePawns();
+                    HidePlayerExpBar();
                 }
             } else {
                 // If the game isn't running then hide pawn HP bars
                 HidePawns();
+                HidePlayerExpBar();
             }
-            Thread.Sleep(200);
+            Thread.Sleep(500);
             StartAllScanners_Thread();
         }
 
@@ -140,12 +146,12 @@ namespace DDDA_Overlay {
             if (!firstPawnBar.IsVisible) {
                 return;
             }
-            Overlay.firstPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            firstPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.firstPawnBar.Visibility = Visibility.Hidden;
-                    Overlay.firstPawnName.Visibility = Visibility.Hidden;
-                    Overlay.firstPawnStamina.Visibility = Visibility.Hidden;
+                    firstPawnBar.Visibility = Visibility.Hidden;
+                    firstPawnName.Visibility = Visibility.Hidden;
+                    firstPawnStamina.Visibility = Visibility.Hidden;
                 })
             );
         }
@@ -154,12 +160,12 @@ namespace DDDA_Overlay {
             if (!secondPawnBar.IsVisible) {
                 return;
             }
-            Overlay.secondPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            secondPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.secondPawnBar.Visibility = Visibility.Hidden;
-                    Overlay.secondPawnName.Visibility = Visibility.Hidden;
-                    Overlay.secondPawnStamina.Visibility = Visibility.Hidden;
+                    secondPawnBar.Visibility = Visibility.Hidden;
+                    secondPawnName.Visibility = Visibility.Hidden;
+                    secondPawnStamina.Visibility = Visibility.Hidden;
                 })
             );
         }
@@ -168,105 +174,95 @@ namespace DDDA_Overlay {
             if (!thirdPawnBar.IsVisible) {
                 return;
             }
-            Overlay.thirdPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            thirdPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.thirdPawnBar.Visibility = Visibility.Hidden;
-                    Overlay.thirdPawnName.Visibility = Visibility.Hidden;
-                    Overlay.thirdPawnStamina.Visibility = Visibility.Hidden;
+                    thirdPawnBar.Visibility = Visibility.Hidden;
+                    thirdPawnName.Visibility = Visibility.Hidden;
+                    thirdPawnStamina.Visibility = Visibility.Hidden;
                 })
             );
         }
 
         // Update pawns HP bar
-        private void UpdateFirstPawnBar(float CurrentHP, float TotalHP) {
-            Overlay.firstPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        private void UpdateFirstPawn(string Name, float CurrentHP, float TotalHP, int CurrentStamina, int TotalStamina) {
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.firstPawnBar.Maximum = TotalHP;
-                    Overlay.firstPawnBar.Value = CurrentHP;
+                    this.firstPawnBar.Maximum = TotalHP;
+                    this.firstPawnBar.Value = CurrentHP;
+                    this.firstPawnName.Content = Name;
+                    this.firstPawnStamina.Value = CurrentStamina;
+                    this.firstPawnStamina.Maximum = TotalStamina;
                 })
             );
         }
 
-        private void UpdateSecondPawnBar(float CurrentHP, float TotalHP) {
-            Overlay.secondPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        private void UpdateSecondPawn(string Name, float CurrentHP, float TotalHP, int CurrentStamina, int TotalStamina) {
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.secondPawnBar.Maximum = TotalHP;
-                    Overlay.secondPawnBar.Value = CurrentHP;
+                    this.secondPawnBar.Maximum = TotalHP;
+                    this.secondPawnBar.Value = CurrentHP;
+                    this.secondPawnName.Content = Name;
+                    this.secondPawnStamina.Value = CurrentStamina;
+                    this.secondPawnStamina.Maximum = TotalStamina;
                 })
             );
         }
 
-        private void UpdateThirdPawnBar(float CurrentHP, float TotalHP) {
-            Overlay.thirdPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        private void UpdateThirdPawn(string Name, float CurrentHP, float TotalHP, int CurrentStamina, int TotalStamina) {
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.thirdPawnBar.Maximum = TotalHP;
-                    Overlay.thirdPawnBar.Value = CurrentHP;
+                    this.thirdPawnBar.Maximum = TotalHP;
+                    this.thirdPawnBar.Value = CurrentHP;
+                    this.thirdPawnName.Content = Name;
+                    this.thirdPawnStamina.Value = CurrentStamina;
+                    this.thirdPawnStamina.Maximum = TotalStamina;
                 })
             );
         }
 
         //Show Pawns
         private void ShowFirstPawn() {
-            Overlay.firstPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            if (firstPawnBar.IsVisible) {
+                return;
+            }
+            firstPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.firstPawnBar.Visibility = Visibility.Visible;
-                    Overlay.firstPawnName.Visibility = Visibility.Visible;
-                    Overlay.firstPawnStamina.Visibility = Visibility.Visible;
+                    firstPawnBar.Visibility = Visibility.Visible;
+                    firstPawnName.Visibility = Visibility.Visible;
+                    firstPawnStamina.Visibility = Visibility.Visible;
                 })
             );
         }
 
         private void ShowSecondPawn() {
-            Overlay.secondPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            if (secondPawnBar.IsVisible) {
+                return;
+            }
+            secondPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.secondPawnBar.Visibility = Visibility.Visible;
-                    Overlay.secondPawnName.Visibility = Visibility.Visible;
-                    Overlay.secondPawnStamina.Visibility = Visibility.Visible;
+                    secondPawnBar.Visibility = Visibility.Visible;
+                    secondPawnName.Visibility = Visibility.Visible;
+                    secondPawnStamina.Visibility = Visibility.Visible;
                 })
             );
         }
 
         private void ShowThirdPawn() {
-            Overlay.thirdPawnBar.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+            if (thirdPawnBar.IsVisible) {
+                return;
+            }
+            thirdPawnBar.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.thirdPawnBar.Visibility = Visibility.Visible;
-                    Overlay.thirdPawnName.Visibility = Visibility.Visible;
-                    Overlay.thirdPawnStamina.Visibility = Visibility.Visible;
-                })
-            );
-        }
-
-        // Update Pawns names
-        private void UpdateFirstPawnName(string Name) {
-            Overlay.firstPawnName.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
-                new Action(() => {
-                    Overlay.firstPawnName.Content = Name;
-                })
-            );
-        }
-
-        private void UpdateSecondPawnName(string Name) {
-            Overlay.secondPawnName.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
-                new Action(() => {
-                    Overlay.secondPawnName.Content = Name;
-                })
-            );
-        }
-
-        private void UpdateThirdPawnName(string Name) {
-            Overlay.thirdPawnName.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
-                new Action(() => {
-                    Overlay.thirdPawnName.Content = Name;
+                    thirdPawnBar.Visibility = Visibility.Visible;
+                    thirdPawnName.Visibility = Visibility.Visible;
+                    thirdPawnStamina.Visibility = Visibility.Visible;
                 })
             );
         }
@@ -306,34 +302,57 @@ namespace DDDA_Overlay {
             }
         }
 
-
-        // Update pawns staminas
-        private void UpdateFirstPawnStamina(int CurrentStamina, int TotalStamina) {
-            Overlay.firstPawnStamina.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        // Player stuff
+        private void HidePlayerExpBar() {
+            if (!ExperienceBar.IsVisible) {
+                return;
+            }
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.firstPawnStamina.Maximum = TotalStamina;
-                    Overlay.firstPawnStamina.Value = CurrentStamina;
+                    ExperienceBar.Visibility = Visibility.Hidden;
+                    currentLevelText.Visibility = Visibility.Hidden;
+                    nextLevelText.Visibility = Visibility.Hidden;
+                    levelExpText.Visibility = Visibility.Hidden;
+                    levelPercentageText.Visibility = Visibility.Hidden;
                 })
             );
         }
 
-        private void UpdateSecondPawnStamina(int CurrentStamina, int TotalStamina) {
-            Overlay.secondPawnStamina.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        private void ShowPlayerExpBar() {
+            if (ExperienceBar.IsVisible) {
+                return;
+            }
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.secondPawnStamina.Maximum = TotalStamina;
-                    Overlay.secondPawnStamina.Value = CurrentStamina;
+                    ExperienceBar.Visibility = Visibility.Visible;
+                    currentLevelText.Visibility = Visibility.Visible;
+                    nextLevelText.Visibility = Visibility.Visible;
+                    levelExpText.Visibility = Visibility.Visible;
+                    levelPercentageText.Visibility = Visibility.Visible;
                 })
             );
         }
 
-        private void UpdateThirdPawnStamina(int CurrentStamina, int TotalStamina) {
-            Overlay.thirdPawnStamina.Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.Background,
+        private void UpdateExp(int CurrentExp, int TotalExp, int CurrentLevel) {
+            float f_TotalExp = TotalExp;
+            float f_CurrentExp = CurrentExp;
+            float ExpPercentage = (f_CurrentExp / f_TotalExp) * 100.0f;
+            this.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => {
-                    Overlay.thirdPawnStamina.Maximum = TotalStamina;
-                    Overlay.thirdPawnStamina.Value = CurrentStamina;
+                    
+                    // Texts
+                    currentLevelText.Content = $"Lvl {CurrentLevel}";
+                    nextLevelText.Content = $"Lvl {CurrentLevel + 1}";
+                    levelExpText.Content = $"{CurrentExp}/{TotalExp}";
+                    levelPercentageText.Content = $"{(int)ExpPercentage}%";
+
+                    // Actual bar
+                    ExperienceBar.Maximum = TotalExp;
+                    ExperienceBar.Value = CurrentExp;
+
                 })
             );
         }

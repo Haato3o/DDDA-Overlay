@@ -47,11 +47,12 @@ namespace DDDA_Overlay.Memory {
                     PID = 0;
                 } else if (!ProcessIsRunning) {
                     PID = DDDA_Process[0].Id;
-                    DDDA_hWnd = DDDA_Process[0].MainWindowHandle;
                     ProcessHandle = OpenProcess(MEMORY_ALL_ACCESS, false, PID);
                     ProcessIsRunning = true;
+                } else if (ProcessIsRunning && (int)DDDA_hWnd == 0) {
+                    DDDA_hWnd = DDDA_Process[0].MainWindowHandle;
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
 
