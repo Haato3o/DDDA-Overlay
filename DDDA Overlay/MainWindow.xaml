@@ -30,11 +30,9 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Determinate" >
-                                        <Storyboard RepeatBehavior="Forever">
-
-                                        </Storyboard>
                                     </VisualState>
-                                    <VisualState x:Name="Indeterminate" />
+                                    <VisualState x:Name="Indeterminate" >
+                                    </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0,0,0,0" UseLayoutRounding="False" />
@@ -49,21 +47,6 @@
                                     </TransformGroup>
                                 </Grid.LayoutTransform>
                                 <Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}"/>
-                                <Grid x:Name="GlowRect" Margin="0,0,0,0" ClipToBounds="True" HorizontalAlignment="Left">
-                                    <Rectangle x:Name="PART_GlowRect" Width="50" HorizontalAlignment="Left" Margin="-50, 0,0,0">
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush EndPoint="0,1" MappingMode="RelativeToBoundingBox" StartPoint="1,0">
-                                                <GradientStop Offset="1"/>
-                                                <GradientStop Color="#92FFFFFF"/>
-                                                <GradientStop Color="#19000000"/>
-                                                <GradientStop Color="#0CFFFFFF" Offset="0.504"/>
-                                                <GradientStop Color="#0C000000"/>
-                                                <GradientStop Color="#0CFFFFFF"/>
-                                                <GradientStop Color="#26FFFFFF"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                </Grid>
                             </Grid>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -73,9 +56,6 @@
                                         <RotateTransform Angle="-90"/>
                                     </Setter.Value>
                                 </Setter>
-                            </Trigger>
-                            <Trigger Property="IsIndeterminate" Value="true">
-                                <Setter Property="Visibility" TargetName="Indicator" Value="Collapsed"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -119,21 +99,6 @@
                                 </Grid.LayoutTransform>
                                 <Rectangle x:Name="Indicator" Fill="{TemplateBinding Foreground}" >
                                 </Rectangle>
-                                <Grid x:Name="GlowRect" Margin="0,0,0,0" ClipToBounds="True" HorizontalAlignment="Left">
-                                    <Rectangle x:Name="PART_GlowRect" Width="50" HorizontalAlignment="Left" Margin="-50, 0,0,0">
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush EndPoint="0,1" MappingMode="RelativeToBoundingBox" StartPoint="1,0">
-                                                <GradientStop Offset="1"/>
-                                                <GradientStop Color="#92FFFFFF"/>
-                                                <GradientStop Color="#19000000"/>
-                                                <GradientStop Color="#0CFFFFFF" Offset="0.504"/>
-                                                <GradientStop Color="#0C000000"/>
-                                                <GradientStop Color="#0CFFFFFF"/>
-                                                <GradientStop Color="#26FFFFFF"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                </Grid>
                             </Grid>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -188,10 +153,10 @@
             </ProgressBar.Foreground>
         </ProgressBar>
         <ProgressBar x:Name="ExperienceBar" HorizontalAlignment="Left" Height="3" Margin="0,763,0,0" VerticalAlignment="Top" Width="1366" Background="#33FFFFFF" Foreground="#FF23B5E0" Value="50" Style="{DynamicResource expBar}" BorderBrush="#33FFFFFF" />
-        <Label x:Name="currentLevelText" Content="Lvl 158" HorizontalAlignment="Left" Margin="0,752,0,0" VerticalAlignment="Top" Width="48" Foreground="#FFEAEAEA" FontSize="10" FontFamily="Roboto" BorderThickness="0" Height="11" Padding="0"/>
-        <Label x:Name="nextLevelText" Content="Lvl 159" HorizontalAlignment="Left" Margin="1315,752,0,0" VerticalAlignment="Top" Width="48" Foreground="#FFEAEAEA" FontSize="10" FontFamily="Roboto" BorderThickness="0" Height="11" Padding="0" HorizontalContentAlignment="Right"/>
-        <Label x:Name="levelPercentageText" Content="50%" HorizontalAlignment="Left" Margin="670,752,0,0" VerticalAlignment="Top" Width="34" Foreground="#FFEAEAEA" FontSize="10" FontFamily="Roboto" BorderThickness="0" Height="11" Padding="0" HorizontalContentAlignment="Center"/>
-        <Label x:Name="levelExpText" Content="(100000/200000)" HorizontalAlignment="Left" Margin="619,742,0,0" VerticalAlignment="Top" Width="137" Foreground="#FFEAEAEA" FontSize="10" FontFamily="Roboto" BorderThickness="0" Height="11" Padding="0" HorizontalContentAlignment="Center"/>
+        <Label x:Name="currentLevelText" Content="Lvl 158" HorizontalAlignment="Left" Margin="0,751,0,0" VerticalAlignment="Top" Width="48" Foreground="#FFEAEAEA" FontFamily="Roboto" BorderThickness="0" Height="12" Padding="0" FontSize="11" FontWeight="Bold"/>
+        <Label x:Name="nextLevelText" Content="Lvl 159" HorizontalAlignment="Left" Margin="1315,751,0,0" VerticalAlignment="Top" Width="48" Foreground="#FFEAEAEA" FontFamily="Roboto" BorderThickness="0" Height="12" Padding="0" HorizontalContentAlignment="Right" FontSize="11" FontWeight="Bold"/>
+        <Label x:Name="levelPercentageText" Content="50%" HorizontalAlignment="Left" Margin="670,751,0,0" VerticalAlignment="Top" Width="34" Foreground="#FFEAEAEA" FontFamily="Roboto" BorderThickness="0" Height="12" Padding="0" HorizontalContentAlignment="Center" FontSize="11"/>
+        <Label x:Name="levelExpText" Content="(100000/200000)" HorizontalAlignment="Left" Margin="619,740,0,0" VerticalAlignment="Top" Width="137" Foreground="#FFEAEAEA" FontFamily="Roboto" BorderThickness="0" Height="13" Padding="0" HorizontalContentAlignment="Center" FontSize="11"/>
     </Grid>
 
 </Window>

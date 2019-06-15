@@ -346,7 +346,7 @@ namespace DDDA_Overlay {
                     // Texts
                     currentLevelText.Content = $"Lvl {CurrentLevel}";
                     nextLevelText.Content = $"Lvl {CurrentLevel + 1}";
-                    levelExpText.Content = $"{CurrentExp}/{TotalExp}";
+                    levelExpText.Content = $"({CurrentExp}/{TotalExp})";
                     levelPercentageText.Content = $"{(int)ExpPercentage}%";
 
                     // Actual bar
